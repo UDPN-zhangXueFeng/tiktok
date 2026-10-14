@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>TikTok Shop 马来西亚利润计算器</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --page: #f3f5f8;
+      --surface: #fff;
+      --ink: #17212f;
+      --muted: #667386;
+      --line: #e3e8ef;
+      --accent: #e92d55;
+      --accent-dark: #c91f45;
+      --bad: #b42335;
+      --warn: #825b12;
+      --warn-bg: #fff8e8;
+      --radius: 18px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", sans-serif;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      background:
+        radial-gradient(ellipse at 90% 0%, rgba(233, 45, 85, 0.08), transparent 32rem),
+        var(--page);
+      color: var(--ink);
+    }
+
+    .page-shell {
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 42px 0 52px;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 48px;
+      height: 48px;
+      flex: 0 0 auto;
+      place-items: center;
+      border-radius: 15px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      box-shadow: 0 8px 20px rgba(233, 45, 85, 0.2);
+    }
+
+    .eyebrow {
+      margin: 0 0 5px;
+      color: var(--accent-dark);
+      font-size: 11px;
+      font-weight: 750;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(24px, 4vw, 32px);
+      line-height: 1.2;
+      letter-spacing: -0.035em;
+    }
+
+    .intro {
+      max-width: 700px;
+      margin: -12px 0 26px 64px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.12fr) minmax(330px, 0.88fr);
+      align-items: start;
+      gap: 22px;
+    }
+
+    .panel {
+      border: 1px solid rgba(220, 226, 235, 0.9);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: 0 12px 36px rgba(25, 39, 59, 0.055);
+    }
+
+    .form-panel { padding: 26px; }
+
+    .panel-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+    }
+
+    .panel-description {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .currency-chip {
+      flex: 0 0 auto;
+      border: 1px solid #f3cbd4;
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: #fff7f9;
+      color: var(--accent-dark);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    fieldset {
+      min-width: 0;
+      margin: 0;
+      padding: 0 0 20px;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    fieldset + fieldset { padding-top: 20px; }
+    fieldset:last-of-type { border-bottom: 0; padding-bottom: 4px; }
+
+    legend {
+      margin-bottom: 5px;
+      padding: 0;
+      font-size: 14px;
+      font-weight: 750;
+    }
+
+    .field-note {
+      display: block;
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px 16px;
+    }
+
+    .field { min-width: 0; }
+    .field.full { grid-column: 1 / -1; }
+
+    label {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 7px;
+      color: #303b4a;
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .unit {
+      color: #8993a1;
+      font-size: 11px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    input, select {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid #d9e0e9;
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: #fff;
+      color: var(--ink);
+      font: inherit;
+      font-size: 14px;
+      transition: border-color 140ms ease, box-shadow 140ms ease;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(233, 45, 85, 0.12);
+    }
+
+    input::placeholder { color: #a6afbb; }
+
+    .button-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    button {
+      min-height: 48px;
+      border: 0;
+      border-radius: 11px;
+      padding: 12px 18px;
+      background: var(--accent);
+      color: white;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 750;
+      cursor: pointer;
+      transition: background 140ms ease, transform 140ms ease;
+    }
+
+    button:hover { background: var(--accent-dark); }
+    button:active { transform: translateY(1px); }
+    button:focus-visible { outline: 3px solid rgba(233, 45, 85, 0.35); outline-offset: 2px; }
+
+    .button-help {
+      margin: 0;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .form-message {
+      min-height: 18px;
+      margin: 10px 0 0;
+      color: var(--bad);
+      font-size: 12px;
+    }
+
+    .result-panel { position: sticky; top: 20px; overflow: hidden; }
+
+    .profit-card {
+      padding: 26px;
+      background: linear-gradient(135deg, #12352a, #1f6543);
+      color: #fff;
+      transition: background 160ms ease;
+    }
+
+    .profit-card.loss { background: linear-gradient(135deg, #50242b, #a83443); }
+    .profit-card.break-even { background: linear-gradient(135deg, #564322, #987224); }
+
+    .profit-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .profit-status {
+      border: 1px solid rgba(255, 255, 255, 0.23);
+      border-radius: 999px;
+      padding: 5px 8px;
+      color: #fff;
+      font-size: 10px;
+      white-space: nowrap;
+    }
+
+    .profit-value {
+      margin: 14px 0 4px;
+      font-size: clamp(34px, 5vw, 46px);
+      font-weight: 780;
+      letter-spacing: -0.055em;
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .profit-conversion {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .summary-item {
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 12px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .summary-item span {
+      display: block;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 10px;
+    }
+
+    .summary-item strong {
+      display: block;
+      margin-top: 5px;
+      font-size: 16px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .result-content { padding: 23px 26px 26px; }
+    .result-content h2 { margin-bottom: 16px; }
+
+    .result-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 9px 0;
+      border-bottom: 1px solid #edf0f4;
+      color: #556173;
+      font-size: 12px;
+    }
+
+    .result-row strong {
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 700;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .result-row.total {
+      margin-top: 2px;
+      padding-top: 13px;
+      border-bottom: 0;
+      color: var(--ink);
+      font-weight: 750;
+    }
+
+    .buyer-box {
+      margin-top: 20px;
+      border: 1px solid #f0e3c5;
+      border-radius: 12px;
+      padding: 14px;
+      background: var(--warn-bg);
+    }
+
+    .buyer-box .result-row { padding: 0 0 8px; border-bottom: 0; color: var(--warn); }
+    .buyer-box .result-row strong { color: #553c10; }
+    .buyer-box p {
+      margin: 0;
+      color: #78653e;
+      font-size: 11px;
+      line-height: 1.55;
+    }
+
+    .assumption-note {
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.65;
+    }
+
+    .page-footer {
+      margin: 20px 4px 0;
+      color: #7a8594;
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 860px) {
+      .layout { grid-template-columns: minmax(0, 1fr); }
+      .result-panel { position: static; }
+      .intro { margin-left: 0; }
+    }
+
+    @media (max-width: 540px) {
+      .page-shell { width: min(100% - 24px, 600px); padding: 24px 0 32px; }
+      .page-header { gap: 12px; margin-bottom: 22px; }
+      .brand-mark { width: 42px; height: 42px; border-radius: 13px; }
+      .intro { margin-top: -10px; margin-bottom: 20px; font-size: 13px; }
+      .form-panel { padding: 20px 16px; }
+      .panel-heading { margin-bottom: 18px; }
+      .field-grid { gap: 13px 10px; }
+      .button-row { align-items: stretch; flex-direction: column; }
+      button { width: 100%; }
+      .profit-card { padding: 22px 20px; }
+      .result-content { padding: 20px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-shell">
+    <header class="page-header">
+      <div class="brand-mark" aria-hidden="true">MY</div>
+      <div>
+        <p class="eyebrow">TikTok Shop · Malaysia</p>
+        <h1>单件利润计算器</h1>
+      </div>
+    </header>
+    <p class="intro">输入人民币成本和马币挂牌价，快速拆分平台扣费、预估净利润与利润率。所有结果仅作单笔经营测算。</p>
+
+    <div class="layout">
+      <section class="panel form-panel" aria-labelledby="input-title">
+        <div class="panel-heading">
+          <div>
+            <h2 id="input-title">商品与费用输入</h2>
+            <p class="panel-description">按当前商品、物流和店铺费率填写；允许成本填 0。</p>
+          </div>
+          <span class="currency-chip">CNY → MYR</span>
+        </div>
+
+        <form id="calculatorForm">
+          <fieldset>
+            <legend>采购与跨境成本</legend>
+            <p class="field-note">以下三项均按人民币（CNY）填写，再按汇率折算为 MYR。</p>
+            <div class="field-grid">
+              <div class="field">
+                <label for="costCNY">货本成本 <span class="unit">CNY</span></label>
+                <input type="number" id="costCNY" value="8" min="0" step="0.01" required inputmode="decimal">
+              </div>
+              <div class="field">
+                <label for="shippingCNY">跨境运费 <span class="unit">CNY</span></label>
+                <input type="number" id="shippingCNY" value="15" min="0" step="0.01" required inputmode="decimal">
+              </div>
+              <div class="field">
+                <label for="otherCNY">其他成本 <span class="unit">CNY</span></label>
+                <input type="number" id="otherCNY" value="1" min="0" step="0.01" required inputmode="decimal" aria-describedby="otherCostHelp">
+                <span id="otherCostHelp" class="field-note">如包装、损耗等。</span>
+              </div>
+              <div class="field">
+                <label for="rate">汇率 <span class="unit">1 CNY = MYR</span></label>
+                <input type="number" id="rate" value="0.61" min="0.000001" step="any" required inputmode="decimal">
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>售价与平台费用</legend>
+            <p class="field-note">比例费用暂按商品挂牌价计算；实际计费基数请对照 Seller Center 和结算单。</p>
+            <div class="field-grid">
+              <div class="field">
+                <label for="priceMYR">商品挂牌价 <span class="unit">MYR</span></label>
+                <input type="number" id="priceMYR" value="20" min="0.01" step="0.01" required inputmode="decimal">
+              </div>
+              <div class="field">
+                <label for="commission">平台佣金率 <span class="unit">%</span></label>
+                <input type="number" id="commission" value="10" min="0" max="100" step="0.1" required inputmode="decimal">
+              </div>
+              <div class="field">
+                <label for="transaction">交易手续费率 <span class="unit">%</span></label>
+                <select id="transaction" required>
+                  <option value="3.78">普通支付 · 3.78%</option>
+                  <option value="4.86">PayLater · 4.86%</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="platformFee">平台支持费 <span class="unit">MYR / 单</span></label>
+                <input type="number" id="platformFee" value="0.54" min="0" step="0.01" required inputmode="decimal">
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>买家付款估算</legend>
+            <p class="field-note">此项只影响买家付款参考值，不计入卖家收入或利润。</p>
+            <div class="field-grid">
+              <div class="field">
+                <label for="lvgTax">LVG 税估算率 <span class="unit">%</span></label>
+                <input type="number" id="lvgTax" value="10" min="0" max="100" step="0.1" required inputmode="decimal" aria-describedby="taxHelp">
+              </div>
+              <div class="field full">
+                <span id="taxHelp" class="field-note">默认 10% 仅用于展示估算；实际税率、税基和买家结账金额请以当前规定及平台页面为准。该估算不含运费或优惠。</span>
+              </div>
+            </div>
+          </fieldset>
+
+          <div class="button-row">
+            <button type="submit">计算利润</button>
+            <p class="button-help">修改输入后结果会自动更新。此页在浏览器本地计算，不会上传数据。</p>
+          </div>
+          <p id="formMessage" class="form-message" role="alert" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <section class="panel result-panel" aria-labelledby="result-title" aria-live="polite">
+        <div class="profit-card" id="profitCard">
+          <div class="profit-label">
+            <span id="result-title">预估净利润</span>
+            <span class="profit-status" id="profitStatus">正向贡献</span>
+          </div>
+          <p class="profit-value" id="profitMYR">RM 0.00</p>
+          <p class="profit-conversion" id="profitCNY">约 CNY 0.00</p>
+          <div class="summary-grid">
+            <div class="summary-item">
+              <span>利润率</span>
+              <strong id="margin">0.0%</strong>
+            </div>
+            <div class="summary-item">
+              <span>平台总扣费</span>
+              <strong id="totalFees">RM 0.00</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="result-content">
+          <h2>计算明细</h2>
+          <div class="result-row">
+            <span>货本 + 运费 + 其他成本</span>
+            <strong id="costSummary">CNY 0.00 → RM 0.00</strong>
+          </div>
+          <div class="result-row">
+            <span>平台佣金</span>
+            <strong id="commissionResult">RM 0.00</strong>
+          </div>
+          <div class="result-row">
+            <span>交易手续费</span>
+            <strong id="transactionResult">RM 0.00</strong>
+          </div>
+          <div class="result-row">
+            <span>平台支持费</span>
+            <strong id="platformFeeResult">RM 0.00</strong>
+          </div>
+          <div class="result-row total">
+            <span>商品挂牌价</span>
+            <strong id="salePriceResult">RM 0.00</strong>
+          </div>
+
+          <div class="buyer-box">
+            <div class="result-row">
+              <span>买家付款参考额（含税估算）</span>
+              <strong id="buyerPay">RM 0.00</strong>
+            </div>
+            <p>按挂牌价加上输入的税率估算；不含运费、优惠券及其他结账项目，不代表卖家实际收入。</p>
+          </div>
+          <p class="assumption-note">计算口径：净利润 = 挂牌价 − 折算后成本 − 平台佣金 − 交易手续费 − 平台支持费。当前佣金和交易手续费按商品挂牌价计提；若平台按含运费或优惠后的金额计费，结果会有差异。</p>
+        </div>
+      </section>
+    </div>
+
+    <footer class="page-footer">费率、活动补贴、税务口径和结算规则会变化。正式定价前，请以 Seller Center 当前费率和真实订单结算明细复核。</footer>
+  </main>
+
+  <script>
+    'use strict';
+
+    const form = document.getElementById('calculatorForm');
+    const formMessage = document.getElementById('formMessage');
+    const inputs = Array.from(form.querySelectorAll('input, select'));
+
+    const formatMYR = (amount) => `RM ${amount.toFixed(2)}`;
+    const formatCNY = (amount) => `CNY ${amount.toFixed(2)}`;
+    const formatPercent = (amount) => `${amount.toFixed(1)}%`;
+
+    function readValue(id) {
+      return Number(document.getElementById(id).value);
+    }
+
+    function calculate() {
+      const costCNY = readValue('costCNY');
+      const shippingCNY = readValue('shippingCNY');
+      const otherCNY = readValue('otherCNY');
+      const priceMYR = readValue('priceMYR');
+      const rate = readValue('rate');
+      const commissionRate = readValue('commission') / 100;
+      const transactionRate = readValue('transaction') / 100;
+      const platformFee = readValue('platformFee');
+      const lvgTaxRate = readValue('lvgTax') / 100;
+
+      const totalCostCNY = costCNY + shippingCNY + otherCNY;
+      const totalCostMYR = totalCostCNY * rate;
+      const commission = priceMYR * commissionRate;
+      const transactionFee = priceMYR * transactionRate;
+      const totalPlatformFee = commission + transactionFee + platformFee;
+      const profitMYR = priceMYR - totalCostMYR - totalPlatformFee;
+      const margin = (profitMYR / priceMYR) * 100;
+      const buyerPay = priceMYR * (1 + lvgTaxRate);
+
+      document.getElementById('profitMYR').textContent = formatMYR(profitMYR);
+      document.getElementById('profitCNY').textContent = `约 ${formatCNY(profitMYR / rate)}`;
+      document.getElementById('margin').textContent = formatPercent(margin);
+      document.getElementById('totalFees').textContent = formatMYR(totalPlatformFee);
+      document.getElementById('costSummary').textContent = `${formatCNY(totalCostCNY)} → ${formatMYR(totalCostMYR)}`;
+      document.getElementById('commissionResult').textContent = formatMYR(commission);
+      document.getElementById('transactionResult').textContent = formatMYR(transactionFee);
+      document.getElementById('platformFeeResult').textContent = formatMYR(platformFee);
+      document.getElementById('salePriceResult').textContent = formatMYR(priceMYR);
+      document.getElementById('buyerPay').textContent = formatMYR(buyerPay);
+
+      const profitCard = document.getElementById('profitCard');
+      profitCard.classList.toggle('loss', profitMYR < 0);
+      profitCard.classList.toggle('break-even', profitMYR === 0);
+      document.getElementById('profitStatus').textContent = profitMYR > 0
+        ? '正向贡献'
+        : profitMYR < 0 ? '当前售价亏损' : '收支平衡';
+    }
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+      formMessage.textContent = '';
+      calculate();
+    });
+
+    form.addEventListener('input', () => {
+      if (form.checkValidity()) {
+        formMessage.textContent = '';
+        calculate();
+      } else {
+        formMessage.textContent = '请检查输入：金额不能为负数，汇率须大于 0，百分比需在 0–100 之间。';
+      }
+    });
+
+    form.addEventListener('change', () => {
+      if (form.checkValidity()) {
+        formMessage.textContent = '';
+        calculate();
+      }
+    });
+
+    calculate();
+  </script>
+</body>
+</html>
